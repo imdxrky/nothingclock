@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', () => { // Ensure all code is with
 
     function playRingtone(ringtoneFile) {
         stopRingtoneTest(); 
-        const basePath = 'audio/'; // IMPORTANT: Adjust if your folder is different
+        const basePath = '../audio/'; // IMPORTANT: Adjust if your folder is different
         ringtoneAudio = new Audio(basePath + ringtoneFile);
         ringtoneAudio.play()
             .catch(error => console.error('Error playing ringtone:', error));
