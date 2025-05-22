@@ -1,0 +1,768 @@
+:root {
+    --bg-color: #000000;
+    --text-color: #E0E0E0;
+    --text-color-dim: #888888;
+    --primary-accent: #FF4136; /* Red accent */
+    --card-bg: #1A1A1A;
+    --border-color: #333333;
+    --dot-font: 'VT323', monospace;
+    --animation-speed: 0.3s;
+    --view-transition-speed: 0.4s; /* For view transitions */
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    font-family: var(--dot-font);
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Prevent horizontal scroll from abrupt view changes */
+    position: relative; /* Needed for absolute positioning of views */
+}
+
+.app-header {
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    position: relative; /* z-index context if needed */
+    z-index: 10; /* Ensure header is above views during transition */
+}
+
+.app-header h1 {
+    font-family: var(--dot-font);
+    font-size: 32px;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.header-icons .icon-placeholder {
+    font-size: 28px;
+    color: var(--text-color);
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto; /* Allow individual views to scroll if content exceeds height */
+    overflow-x: hidden; /* Prevent horizontal scroll within content area */
+    display: block; /* Change from flex to block or grid if views are absolutely positioned */
+    position: relative; /* Crucial for absolute positioning of views */
+}
+
+.view {
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    margin: 0 auto;
+    padding: 10px 15px; /* Padding inside each view */
+    
+    position: absolute; /* Make views overlap for transitions */
+    top: 0; /* Align to top of content-area */
+    left: 0;
+    right: 0;
+    bottom: 0; /* Allow view to take full height of scrollable area if needed */
+    
+    opacity: 0;
+    visibility: hidden;
+    /* transform: translateX(30px); /* Start off-screen to the right for slide-in */
+    /* Use scale and opacity for a smoother fade/zoom */
+    transform: scale(0.95);
+    transition: opacity var(--view-transition-speed) ease-in-out, 
+                transform var(--view-transition-speed) ease-in-out,
+                visibility 0s var(--view-transition-speed);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto; /* Allow individual view to scroll if its content is too long */
+}
+
+.view.active-view {
+    opacity: 1;
+    visibility: visible;
+    /* transform: translateX(0); */
+    transform: scale(1);
+    transition-delay: 0s; /* No delay for appearing */
+    z-index: 1; /* Bring active view to the front */
+}
+
+/* Clock Section (Main View) */
+#clock-section .analog-clock-display {
+    text-align: center;
+    margin-bottom: 20px; 
+    position: relative;
+    height: 180px; 
+    width: 180px;  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--border-color);
+    border-radius: 50%;
+    padding: 15px; 
+}
+#clock-section .dots-bg {
+    position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; display: flex;
+    flex-wrap: wrap; justify-content: space-around; align-content: space-around; opacity: 0.3;
+}
+#clock-section .dots-bg .dot { width: 4px; height: 4px; background-color: var(--text-color-dim); border-radius: 50%; margin: 1.5px;}
+#clock-section .digital-time-large { font-size: 44px; color: var(--text-color); margin-top: 8px;}
+#clock-section .location-times { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; max-width: 400px;}
+#clock-section .location-card { background-color: var(--card-bg); padding: 12px; border-radius: 8px; text-align: center; flex-grow: 1; min-width: 140px; max-width: 180px; border: 1px solid var(--border-color);}
+#clock-section .location-card.active { background-color: var(--primary-accent); color: var(--bg-color);}
+#clock-section .location-card.active .location-name{ color: #f0f0f0;}
+#clock-section .location-time { font-size: 26px; margin-bottom: 4px;}
+#clock-section .location-name { font-size: 13px; color: var(--text-color-dim);}
+#add-city-btn-main-view { /* Button on the main clock/world tab */
+    margin-top: 15px;
+    width: auto;
+    padding: 10px 20px;
+    min-width: 180px;
+    max-width: 280px;
+}
+
+
+/* World Clock Section */
+.add-city-shared-btn { /* Class for both Add City buttons */
+    margin: 15px auto 15px auto; 
+    width: auto;
+    padding: 10px 20px;
+    min-width: 150px;
+    max-width: 250px;
+}
+
+.dot-map-container {
+    display: grid;
+    gap: 1px; 
+    width: 100%;
+    max-width: 520px; 
+    margin: 20px auto 25px auto; 
+    padding: 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(26, 26, 26, 0.3);
+    position: relative;
+}
+
+.map-dot {
+    width: 4px; 
+    height: 4px;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.map-dot.land {
+    background-color: var(--text-color-dim);
+}
+.map-dot.land.highlight-city {
+    background-color: var(--primary-accent);
+    transform: scale(1.5); 
+    box-shadow: 0 0 6px var(--primary-accent);
+}
+
+#map-tooltip {
+    position: fixed;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    z-index: 200;
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease-out; 
+    visibility: hidden; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    will-change: transform, opacity;
+}
+
+#map-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+#world-clock-section #world-clock-search { width: 100%; max-width: 280px; padding: 10px; margin-bottom: 10px; background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 5px; font-size: 16px; display: block; margin-left: auto; margin-right: auto; }
+#world-clock-section #world-clock-search::placeholder { color: var(--text-color-dim); }
+
+#world-clock-section .world-clock-list { list-style: none; padding: 0; margin: 0 auto; width: 100%; max-width: 360px; }
+#world-clock-section .world-clock-list li { background-color: var(--card-bg); padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); opacity: 0; transform: translateY(10px); animation: fadeInSlideUp 0.5s ease-out forwards; }
+
+.world-clock-list li:nth-child(1) { animation-delay: 0s; }
+.world-clock-list li:nth-child(2) { animation-delay: 0.05s; }
+.world-clock-list li:nth-child(3) { animation-delay: 0.1s; }
+.world-clock-list li:nth-child(4) { animation-delay: 0.15s; }
+.world-clock-list li:nth-child(5) { animation-delay: 0.2s; }
+
+
+#world-clock-section .wc-city-time .wc-city { font-size: 16px; }
+#world-clock-section .wc-city-time .wc-time { font-size: 18px; font-weight: bold; }
+#world-clock-section .remove-city-btn {
+    background: none;
+    border: none;
+    color: var(--text-color-dim);
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color var(--animation-speed);
+}
+#world-clock-section .remove-city-btn:hover {
+    color: var(--primary-accent);
+}
+
+
+/* Timers Section */
+#timers-section .timer-display { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; height: 200px; width: 100%; max-width: 200px; }
+#timers-section .timer-circle-progress { width: 180px; height: 180px; position: relative; }
+#timers-section .timer-svg { width: 100%; height: 100%; }
+#timers-section .timer-bg-circle { fill: none; stroke: var(--card-bg); stroke-width: 10; }
+#timers-section .timer-progress-circle {
+    fill: none;
+    stroke: var(--primary-accent);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s linear;
+}
+#timers-section .timer-countdown-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 38px; color: var(--text-color); }
+#timers-section .timer-inputs-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 360px; margin-bottom: 15px; }
+#timers-section .timer-inputs { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; gap: 5px; }
+#timers-section .timer-inputs input[type="number"] { width: 45px; padding: 8px; background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); text-align: center; font-size: 18px; border-radius: 5px; -moz-appearance: textfield; }
+#timers-section .timer-inputs input[type="number"]::-webkit-outer-spin-button, #timers-section .timer-inputs input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#timers-section .timer-inputs span { font-size: 13px; color: var(--text-color-dim); margin-right: 8px; }
+#timers-section .timer-buttons-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 280px; }
+
+
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border: 1px solid var(--border-color); }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-color-dim); transition: .4s; }
+input:checked + .slider { background-color: var(--primary-accent); }
+input:checked + .slider:before { transform: translateX(20px); background-color: white; }
+.slider.round { border-radius: 24px; }
+.slider.round:before { border-radius: 50%; }
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--animation-speed) ease-out;
+}
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: auto;
+    padding: 20px 25px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 380px; 
+    font-family: var(--dot-font);
+    color: var(--text-color);
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform var(--animation-speed) ease-out, opacity var(--animation-speed) ease-out;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+}
+.modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-content h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.close-modal-btn {
+    color: var(--text-color-dim);
+    float: right;
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 1;
+}
+.close-modal-btn:hover,
+.close-modal-btn:focus {
+    color: var(--primary-accent);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #000;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    font-family: var(--dot-font);
+    font-size: 16px;
+}
+.modal-content input[type="text"]::placeholder {
+    color: var(--text-color-dim);
+}
+
+.available-cities-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+    max-height: 180px; 
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+.available-cities-list li {
+    padding: 9px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+    font-size: 15px;
+}
+.available-cities-list li:last-child {
+    border-bottom: none;
+}
+.available-cities-list li:hover {
+    background-color: #2a2a2a;
+}
+.available-cities-list li.disabled {
+    color: var(--text-color-dim);
+    cursor: not-allowed;
+    background-color: var(--card-bg);
+}
+
+
+.button-primary, .button-secondary {
+    display: block;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--dot-font);
+    font-size: 16px; 
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s, transform 0.1s ease-out, box-shadow 0.2s;
+    text-align: center;
+}
+.button-primary:active, .button-secondary:active {
+    transform: scale(0.97); /* Slightly more pronounced click effect */
+    box-shadow: 0 0 8px rgba(255, 65, 54, 0.3); /* Primary accent shadow on click */
+}
+.button-secondary:active {
+    box-shadow: 0 0 8px rgba(224, 224, 224, 0.2); /* Lighter shadow for secondary */
+}
+
+
+.button-primary {
+    background-color: var(--primary-accent);
+    color: var(--bg-color);
+}
+.button-primary:hover { filter: brightness(1.1); }
+
+.button-secondary {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.button-secondary:hover { background-color: #2a2a2a; }
+
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    flex-shrink: 0;
+    position: sticky; /* Make nav bar sticky on mobile */
+    bottom: 0;       /* Stick to the bottom */
+    z-index: 100;    /* Ensure it's above content */
+    width: 100%;     /* Ensure it spans full width */
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-color-dim);
+    cursor: pointer;
+    font-family: var(--dot-font);
+    font-size: 12px;
+    text-align: center;
+    padding: 6px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: color var(--animation-speed);
+    flex-grow: 1;
+}
+.nav-item:hover {
+    color: var(--text-color);
+}
+
+.nav-item .nav-icon { /* Style for the new image icons */
+    width: 24px;     /* Adjust desired width */
+    height: 24px;    /* Adjust desired height */
+    margin-bottom: 3px; /* Space between icon and text, adjust as needed */
+    object-fit: contain; /* Ensures the image scales nicely within the bounds */
+}
+.nav-item.active .nav-icon {
+    /* Example: Make active icon slightly brighter or apply a color filter if it's a suitable SVG/PNG */
+    /* filter: brightness(1.5); */
+    /* For a red tint (like your primary accent), if the icon is white/grayscale: */
+    /* filter: invert(40%) sepia(90%) saturate(5000%) hue-rotate(330deg) brightness(100%) contrast(102%); */
+    /* The above filter is an example to make a white icon appear red-ish. You'll need to tune it. */
+}
+.nav-item:hover .nav-icon {
+    /* filter: brightness(1.2); */
+}
+.nav-item .icon-placeholder { /* This style might be redundant now */
+    font-size: 22px;
+    margin-bottom: 3px;
+}
+
+.nav-item.active {
+    color: var(--primary-accent);
+}
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+    animation: growDot 0.3s ease-out;
+}
+
+@keyframes growDot {
+    from { transform: translateX(-50%) scale(0); }
+    to { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes fadeInSlideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =================================== */
+/* =========== MOBILE STYLES ========= */
+/* =================================== */
+@media (max-width: 768px) {
+
+    .app-container {
+        /* Ensure content area can scroll under fixed nav */
+        /* This padding-bottom should be approx the height of the nav bar */
+        padding-bottom: 60px; /* Adjust as needed */
+    }
+
+    .app-header {
+        padding: 15px 20px; 
+    }
+
+    .app-header h1 {
+        font-size: 26px; 
+    }
+
+    .header-icons .icon-placeholder {
+        font-size: 24px;
+    }
+
+    .content-area {
+        padding: 10px; 
+    }
+
+    .view {
+        padding: 5px 10px; /* Add some horizontal padding for mobile views */
+        top: 5px;
+        /* Ensure views allow scrolling if their content is tall */
+        max-height: calc(100vh - 50px - 60px - 20px); /* viewport - header - nav - some margin */
+        overflow-y: auto;
+    }
+
+    /* --- Clock Section (Main View) --- */
+    #clock-section .analog-clock-display {
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    #clock-section .dots-bg .dot {
+        width: 3px;
+        height: 3px;
+        margin: 1px;
+    }
+
+    #clock-section .digital-time-large {
+        font-size: 36px; 
+        margin-top: 5px;
+    }
+
+    #clock-section .location-times {
+        gap: 10px;
+        margin-bottom: 15px;
+        max-width: 100%; 
+    }
+    #clock-section .location-card {
+        padding: 10px;
+        min-width: 120px; 
+    }
+    #clock-section .location-time {
+        font-size: 22px;
+    }
+    #clock-section .location-name {
+        font-size: 12px;
+    }
+
+    /* --- World Clock Section --- */
+    .dot-map-container {
+        max-width: 90vw; /* Make map responsive to viewport width */
+        /* For the 100-col map with 4px dots and 1px gap: (4px dot + 1px gap) * 100 cols = 500px.
+           This will likely require horizontal scrolling or smaller dots on very narrow screens.
+           To make dots smaller on mobile for the SAME 100-col map data:
+        */
+        /* Optional: Make dots smaller and adjust container max-width */
+        /* gap: 0px; */ /* If dots are very small, gap might be 0 */
+        padding: 5px;
+        margin: 15px auto 20px auto;
+    }
+     .map-dot { /* Make dots smaller for the existing 100-column map */
+        width: 2px; /* Smaller dots */
+        height: 2px;
+    }
+    .dot-map-container { /* Recalculate max-width if dot size changes for mobile */
+        max-width: calc((100 * (2px + 1px)) - 1px + (2 * 5px)); /* (100 * 3) - 1 + 10 = 309px */
+        /* If gap is 0: calc((100 * 2px) + (2*5px)) = 210px */
+    }
+
+
+    #world-clock-section #world-clock-search {
+        font-size: 14px;
+        padding: 8px;
+        max-width: 90%;
+    }
+    .add-city-shared-btn { /* Style for both add city buttons on mobile */
+        font-size: 14px;
+        padding: 8px 15px;
+        margin: 10px auto 15px auto;
+    }
+    #world-clock-section .world-clock-list {
+        max-width: 95%;
+    }
+    #world-clock-section .world-clock-list li {
+        padding: 8px 10px;
+    }
+    #world-clock-section .wc-city-time .wc-city {
+        font-size: 14px;
+    }
+    #world-clock-section .wc-city-time .wc-time {
+        font-size: 16px;
+    }
+    #world-clock-section .remove-city-btn {
+        font-size: 16px;
+    }
+    #map-tooltip {
+        font-size: 11px; 
+        padding: 4px 6px;
+    }
+
+
+    /* --- Timers Section --- */
+    #timers-section .timer-display {
+        height: 160px; 
+        max-width: 160px;
+        margin-bottom: 15px;
+    }
+    #timers-section .timer-circle-progress {
+        width: 140px; 
+        height: 140px;
+    }
+    #timers-section .timer-countdown-text {
+        font-size: 32px; 
+    }
+    #timers-section .timer-inputs {
+        gap: 3px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    #timers-section .timer-inputs input[type="number"] {
+        width: 40px; 
+        padding: 6px;
+        font-size: 16px;
+    }
+    #timers-section .timer-inputs span {
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    #timers-section .button-primary,
+    #timers-section .button-secondary {
+        font-size: 16px; 
+        padding: 10px;
+        max-width: 200px; 
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* --- Modal Dialogs --- */
+    .modal-content {
+        max-width: 90%; 
+        padding: 15px 20px;
+    }
+    .modal-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    .modal-content input[type="text"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+    .available-cities-list {
+        max-height: 150px; 
+    }
+    .available-cities-list li {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+
+    /* --- Bottom Navigation --- */
+    /* .bottom-nav is already sticky from desktop styles, which is good for mobile */
+    .nav-item {
+        font-size: 10px; 
+        padding: 4px;
+    }
+    .nav-item .icon-placeholder {
+        font-size: 20px; 
+        margin-bottom: 2px;
+    }
+    .nav-item.active::after {
+        width: 4px;
+        height: 4px;
+        bottom: 0px;
+    }
+
+    .button-primary, .button-secondary {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header h1 {
+        font-size: 22px;
+    }
+    #clock-section .digital-time-large {
+        font-size: 32px;
+    }
+    #clock-section .location-card {
+        min-width: 100px;
+        padding: 8px;
+    }
+    #clock-section .location-time {
+        font-size: 18px;
+    }
+     #timers-section .timer-countdown-text {
+        font-size: 28px;
+    }
+    /* For very small screens, the 100-col map with 2px dots will be about 210px-309px wide.
+       This might still be too wide for some very narrow phone screens in portrait.
+       Users might have to scroll the map container horizontally if it overflows its max-width.
+       To enable this, you could add overflow-x: auto; to .dot-map-container for this breakpoint.
+    */
+    .dot-map-container {
+        /* overflow-x: auto; /* If you want the map itself to be scrollable if too wide */
+    }
+}
+
+/* Ringtone Modal Specifics (mostly uses generic .modal styles) */
+#select-ringtone-modal .modal-content {
+    max-width: 380px; /* Adjust as needed */
+}
+
+.ringtone-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    max-height: 200px; /* Scrollable list */
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.ringtone-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 16px;
+}
+.ringtone-item:last-child {
+    border-bottom: none;
+}
+.ringtone-item:hover {
+    background-color: #2a2a2a;
+}
+.ringtone-item.selected { /* Style for the selected ringtone */
+    background-color: var(--primary-accent);
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+#select-ringtone-modal .button-primary,
+#select-ringtone-modal .button-secondary {
+    width: calc(100% - 0px); /* Full width buttons in modal */
+    margin-top: 10px;
+}
+
+
+/* --- Adjustments for Mobile if needed for Ringtone Modal --- */
+@media (max-width: 768px) {
+    #select-ringtone-modal .modal-content {
+        /* max-width can inherit from generic .modal-content mobile style */
+    }
+    .ringtone-item {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+    .ringtone-list {
+        max-height: 180px;
+    }
+}

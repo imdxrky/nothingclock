@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nothing OS Style Clock</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <!-- Dot Matrix Style Font -->
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1 id="current-view-title">Clock</h1>
+            <div class="header-icons">
+                
+            </div>
+        </header>
+
+        <main class="content-area">
+            <!-- Clock Section (Main View - NOW "Clock" Nav) -->
+            <section id="clock-section" class="view active-view">
+                <div class="analog-clock-display">
+                    <div class="dots-bg">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    </div>
+                    <div id="digital-time-main" class="digital-time-large">12:26 PM</div>
+                </div>
+
+                <div class="location-times">
+                    <div class="location-card active">
+                        <div class="location-time">3:18</div>
+                        <div class="location-name">New York</div>
+                    </div>
+                    <div class="location-card">
+                        <div class="location-time">8:26</div>
+                        <div class="location-name">London</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- World Clock Section (Second View - NOW "World" Nav) -->
+            <section id="world-clock-section" class="view">
+                <div id="dot-map-container" class="dot-map-container">
+                    <!-- JS will populate this with dots -->
+                </div>
+                <div id="map-tooltip" class="map-tooltip"></div> <!-- Tooltip for map dots -->
+                <input type="text" id="world-clock-search" placeholder="Search displayed cities...">
+                <button id="add-city-btn-map-view" class="button-secondary add-city-shared-btn" data-origin="map-view">Add City</button>
+                <ul id="world-clock-list" class="world-clock-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </section>
+
+            <!-- Timers Section -->
+            <section id="timers-section" class="view">
+                <div class="timer-display">
+                    <div class="timer-circle-progress">
+                        <svg viewBox="0 0 100 100" class="timer-svg">
+                            <circle class="timer-bg-circle" cx="50" cy="50" r="45"></circle>
+                            <circle class="timer-progress-circle" cx="50" cy="50" r="45" transform="rotate(-90 50 50)"></circle>
+                        </svg>
+                        <div id="timer-countdown" class="timer-countdown-text">00:00</div>
+                    </div>
+                </div>
+                <div class="timer-inputs">
+                    <input type="number" id="timer-hours" min="0" value="0" placeholder="H">
+                    <span>Hrs</span>
+                    <input type="number" id="timer-minutes" min="0" max="59" value="0" placeholder="M">
+                    <span>Min</span>
+                    <input type="number" id="timer-seconds" min="0" max="59" value="45" placeholder="S">
+                    <span>Sec</span>
+                </div>
+                <button id="timer-start-stop" class="button-primary">Start</button>
+                <button id="timer-reset" class="button-secondary">Reset</button>
+                <button id="select-ringtone" class="button-secondary">Select Ringtone</button>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <button data-view="clock-section" class="nav-item active">
+                <img src="images/clock_icon.png" alt="World Icon" class="nav-icon">
+                Clock <!-- WAS World -->
+            </button>
+            <button data-view="world-clock-section" class="nav-item">
+                <img src="images/world_icon.png" alt="Clock Icon" class="nav-icon">
+                World <!-- WAS Clock -->
+            </button>
+            <button data-view="timers-section" class="nav-item">
+                <img src="images/timer_icon.png" alt="Timers Icon" class="nav-icon">
+                Timers
+            </button>
+        </nav>
+    </div>
+
+    <div id="add-city-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-btn" id="close-add-city-modal-btn">×</span>
+            <h2>Add City to World Clock</h2>
+            <input type="text" id="add-city-search" placeholder="Search available cities...">
+            <ul id="available-cities-list" class="available-cities-list"></ul>
+        </div>
+    </div>
+
+    <div id="select-ringtone-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-btn" id="close-ringtone-modal-btn">×</span>
+            <h2>Select Ringtone</h2>
+            <ul id="ringtone-list" class="ringtone-list">
+                <!-- Ringtones will be populated by JS or hardcoded here -->
+                <li data-ringtone-value="placeholder.mp3" class="ringtone-item">Placeholder Ringtone</li>
+                <li data-ringtone-value="ringtone1.mp3" class="ringtone-item">Digital Alarm</li>
+                <li data-ringtone-value="ringtone2.mp3" class="ringtone-item">Soft Chimes</li>
+                <!-- Add more ringtones as needed -->
+            </ul>
+            <button id="save-ringtone-btn" class="button-primary">Set Ringtone</button>
+            <button id="test-ringtone-btn" class="button-secondary">Test Selected</button>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
