@@ -438,3 +438,243 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* =================================== */
+/* =========== MOBILE STYLES ========= */
+/* =================================== */
+@media (max-width: 768px) {
+
+    .app-header {
+        padding: 15px 20px; /* Reduced header padding */
+    }
+
+    .app-header h1 {
+        font-size: 26px; /* Smaller header title */
+    }
+
+    .header-icons .icon-placeholder {
+        font-size: 24px;
+    }
+
+    .content-area {
+        padding: 10px; /* Reduced content padding */
+    }
+
+    .view {
+        padding: 5px 0;
+        top: 5px;
+    }
+
+    /* --- Clock Section (Main View) --- */
+    #clock-section .analog-clock-display {
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    #clock-section .dots-bg .dot {
+        width: 3px;
+        height: 3px;
+        margin: 1px;
+    }
+
+    #clock-section .digital-time-large {
+        font-size: 36px; /* Smaller main digital time */
+        margin-top: 5px;
+    }
+
+    #clock-section .location-times {
+        gap: 10px;
+        margin-bottom: 15px;
+        max-width: 100%; /* Allow full width */
+    }
+    #clock-section .location-card {
+        padding: 10px;
+        min-width: 120px; /* Smaller location cards */
+    }
+    #clock-section .location-time {
+        font-size: 22px;
+    }
+    #clock-section .location-name {
+        font-size: 12px;
+    }
+
+    /* --- World Clock Section --- */
+    .dot-map-container {
+        /* Allow it to shrink, but maintain aspect ratio if possible, or just let it be smaller */
+        /* The max-width from desktop will apply, it might just be centered if screen is narrower */
+        /* If it's too wide, you might need a smaller dot size or fewer columns for mobile specifically */
+        /* For now, let's assume the desktop size (e.g., 520px or 308px) will center itself */
+        /* OR, force it to be narrower: */
+        max-width: 90vw; /* Example: 90% of viewport width */
+        /* You would then also need to adjust dot size and potentially the MAP_COLS in JS for mobile */
+        /* For simplicity, we'll keep the dotMapData the same and let it center or overflow if too wide */
+        padding: 5px;
+        margin: 15px auto 20px auto;
+    }
+    /* If you want smaller dots on mobile for the SAME map data: */
+    /*
+    .map-dot {
+        width: 2px;
+        height: 2px;
+    }
+    .dot-map-container {
+        max-width: calc((100 * (2px + 0px)) + (2 * 5px)); /* Recalculate based on dot size and MAP_COLS */
+    /* }
+    */
+
+
+    #world-clock-section #world-clock-search {
+        font-size: 14px;
+        padding: 8px;
+        max-width: 90%;
+    }
+    #world-clock-section #add-city-btn {
+        font-size: 14px;
+        padding: 8px 15px;
+        margin: 10px auto 15px auto;
+    }
+    #world-clock-section .world-clock-list {
+        max-width: 95%;
+    }
+    #world-clock-section .world-clock-list li {
+        padding: 8px 10px;
+    }
+    #world-clock-section .wc-city-time .wc-city {
+        font-size: 14px;
+    }
+    #world-clock-section .wc-city-time .wc-time {
+        font-size: 16px;
+    }
+    #world-clock-section .remove-city-btn {
+        font-size: 16px;
+    }
+    #map-tooltip {
+        font-size: 11px; /* Smaller tooltip */
+        padding: 4px 6px;
+    }
+
+
+    /* --- Timers Section --- */
+    #timers-section .timer-display {
+        height: 160px; /* Smaller timer display */
+        max-width: 160px;
+        margin-bottom: 15px;
+    }
+    #timers-section .timer-circle-progress {
+        width: 140px; /* Smaller circle */
+        height: 140px;
+    }
+    /* Note: SVG circle radius (r="45") is relative to its viewBox (0 0 100 100).
+       The actual size change comes from the .timer-circle-progress container.
+       JS recalculates circumference based on r=45, which is fine. */
+    #timers-section .timer-countdown-text {
+        font-size: 32px; /* Smaller countdown text */
+    }
+    #timers-section .timer-inputs {
+        gap: 3px;
+        margin-bottom: 15px;
+        /* Allow inputs to wrap if necessary */
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    #timers-section .timer-inputs input[type="number"] {
+        width: 40px; /* Smaller input fields */
+        padding: 6px;
+        font-size: 16px;
+    }
+    #timers-section .timer-inputs span {
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    #timers-section .button-primary,
+    #timers-section .button-secondary {
+        font-size: 16px; /* Smaller timer buttons */
+        padding: 10px;
+        max-width: 200px; /* Limit button width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* --- Modal Dialogs --- */
+    .modal-content {
+        max-width: 90%; /* Allow modals to use more screen width */
+        padding: 15px 20px;
+    }
+    .modal-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    .modal-content input[type="text"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+    .available-cities-list {
+        max-height: 150px; /* Shorter list for mobile */
+    }
+    .available-cities-list li {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+
+    /* --- Bottom Navigation --- */
+    .bottom-nav {
+        padding: 5px 0; /* Tighter nav padding */
+    }
+    .nav-item {
+        font-size: 10px; /* Smaller nav text */
+        padding: 4px;
+    }
+    .nav-item .icon-placeholder {
+        font-size: 20px; /* Smaller nav icons */
+        margin-bottom: 2px;
+    }
+    .nav-item.active::after {
+        width: 4px;
+        height: 4px;
+        bottom: 0px;
+    }
+
+    /* General Button Sizing (if not overridden by specific sections) */
+    .button-primary, .button-secondary {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+
+/* You might want an even smaller breakpoint for very narrow phones */
+@media (max-width: 480px) {
+    .app-header h1 {
+        font-size: 22px;
+    }
+    #clock-section .digital-time-large {
+        font-size: 32px;
+    }
+    #clock-section .location-card {
+        min-width: 100px;
+        padding: 8px;
+    }
+    #clock-section .location-time {
+        font-size: 18px;
+    }
+     #timers-section .timer-countdown-text {
+        font-size: 28px;
+    }
+    .dot-map-container {
+        /* On very small screens, you might need to make dots even smaller,
+           or accept that the map will require horizontal scrolling if you keep original detail.
+           If you make dots smaller here, you'd also need to adjust max-width of the container.
+        */
+        /* Example for very small screens if you keep the 100-col map: */
+        /*
+        .map-dot { width: 2px; height: 2px; }
+        .dot-map-container {
+            max-width: calc((100 * (2px + 0px)) + (2 * 5px)); /* 200px + 10px = 210px approx */
+        /*    padding: 5px;
+        /* }
+        */
+    }
+}
